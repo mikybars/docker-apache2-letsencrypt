@@ -1,2 +1,2 @@
-# docker-apache2-ssl
+# Apache2 with SSL
 Docker image setting up Apache2 with SSL enabled via Let's Encrypt
