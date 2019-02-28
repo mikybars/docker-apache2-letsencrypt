@@ -5,7 +5,7 @@ if [ ! -e /etc/letsencrypt/live/$(hostname -f)/privkey.pem ]; then
 	echo "No certificate found for $(hostname -f)"
 
 	if [ -n $LETS_ENCRYPT_DOMAINS ]; then
-		LETS_ENCRYPT_DOMAINS="-d $(echo $LETS_ENCRYPT_DOMAINS | sed -e 's/,/ -d /g')"
+		LETS_ENCRYPT_DOMAINS="--domains $LETS_ENCRYPT_DOMAINS"
 	fi
 
 	certbot certonly \
@@ -14,6 +14,7 @@ if [ ! -e /etc/letsencrypt/live/$(hostname -f)/privkey.pem ]; then
 		--no-self-upgrade \
 		--agree-tos \
 		--email $LETS_ENCRYPT_EMAIL \
+		--domain $(hostname -f) \
 		$LETS_ENCRYPT_DOMAINS
 	ln -s /etc/letsencrypt/live/$(hostname -f) /etc/letsencrypt/certs
 else
