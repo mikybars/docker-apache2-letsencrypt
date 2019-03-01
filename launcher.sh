@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 echo "Checking certificates"
 if [ ! -e /etc/letsencrypt/live/$(hostname -f)/privkey.pem ]; then
 	echo "No certificate found for $(hostname -f)"
 
-	if [ -n $LETS_ENCRYPT_DOMAINS ]; then
+	if [ -n "$LETS_ENCRYPT_DOMAINS" ]; then
 		LETS_ENCRYPT_DOMAINS="--domains $LETS_ENCRYPT_DOMAINS"
 	fi
 
