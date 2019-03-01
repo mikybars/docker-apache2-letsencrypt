@@ -1,17 +1,18 @@
+# https://medium.com/mobileforgood/coding-tips-patterns-for-continuous-integration-with-docker-on-travis-ci-9cedb8348a62
 language: bash
 services:
   - docker
 
+before_script:
+  - docker image pull $IMAGE_NAME || true 
 script:
-  - docker image build --tag $IMAGE_NAME .
+  - docker image build --pull --cache-from $IMAGE_NAME --tag $IMAGE_NAME .
   - docker container run $IMAGE_NAME certbot --version
-
 after_script:
   - docker image ls
 
 before_deploy:
   - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
-
 deploy:
   provider: script
   script: docker image push $IMAGE_NAME
