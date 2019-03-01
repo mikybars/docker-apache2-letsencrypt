@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 echo "Checking certificates"
 if [ ! -e /etc/letsencrypt/live/$(hostname -f)/privkey.pem ]; then
