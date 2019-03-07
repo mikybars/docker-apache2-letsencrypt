@@ -15,6 +15,7 @@ before_deploy:
   - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
 deploy:
   provider: script
+  skip_cleanup: true
   script: docker image push $IMAGE_NAME
   on:
     branch: master
