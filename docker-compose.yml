@@ -1,9 +1,9 @@
 version: '2'
 
 services:
-  https:
+  web:
     build: .
-    image: mperezi/apache2-ssl
+    image: mperezi/apache2-letsencrypt
     hostname: mperezi.com
     ports:
       - '80:80'
