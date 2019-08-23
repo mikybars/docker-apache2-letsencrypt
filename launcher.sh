@@ -3,12 +3,15 @@
 LETS_ENCRYPT_ETC="/etc/letsencrypt"
 LETS_ENCRYPT_ROOT_DOMAIN=$(hostname -f)
 
+service cron start
+service rsyslog start
+
 certificate_exists_for() {
 	test -e "$LETS_ENCRYPT_ETC/live/$1/privkey.pem"
 }
 
 echo "Checking certificates..."
-if [ ! certificate_exists_for $LETS_ENCRYPT_ROOT_DOMAIN ]; then
+if ! certificate_exists_for $LETS_ENCRYPT_ROOT_DOMAIN; then
 	echo "No certificate found for $LETS_ENCRYPT_ROOT_DOMAIN"
 
 	[ -z "$LETS_ENCRYPT_DOMAINS" ] || LETS_ENCRYPT_ADDITIONAL_DOMAINS="--domains $LETS_ENCRYPT_DOMAINS"
