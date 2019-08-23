@@ -1,5 +1,8 @@
 #!/bin/bash
 
+service cron start
+service rsyslog start
+
 echo "Checking certificates"
 if [ ! -e /etc/letsencrypt/live/$(hostname -f)/privkey.pem ]; then
 	echo "No certificate found for $(hostname -f)"
