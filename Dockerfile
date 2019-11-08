@@ -1,9 +1,11 @@
-FROM httpd
+FROM httpd:2.4
+
 LABEL maintainer="Miguel Pérez <https://github.com/mperezi>"
 
 RUN printf "deb http://deb.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/backports.list && \
 	apt-get update && \
-	apt-get -y install certbot python-certbot-apache -t stretch-backports
+	apt-get -y install \
+		certbot python-certbot-apache -t stretch-backports
 
 RUN sed -i \
 	-e 's/^#\(LoadModule .*mod_ssl.so\)/\1/' \
