@@ -13,7 +13,7 @@ if [ ! certificate_exists_for $LETS_ENCRYPT_ROOT_DOMAIN ]; then
 
 	[ -z "$LETS_ENCRYPT_DOMAINS" ] || LETS_ENCRYPT_ADDITIONAL_DOMAINS="--domains $LETS_ENCRYPT_DOMAINS"
 
-	certbot certonly \
+	certbot run \
 		--apache  \
 		--non-interactive \
 		--no-self-upgrade \
@@ -28,7 +28,7 @@ else
 	echo "Certificate found for $LETS_ENCRYPT_ROOT_DOMAIN"
 	certbot certificates --cert-name $LETS_ENCRYPT_ROOT_DOMAIN
 	certbot renew --no-self-upgrade
-fi
 
-echo "Launching apache2."
-httpd-foreground
+	echo "Launching apache2."
+	httpd-foreground
+fi
