@@ -1,22 +1,32 @@
 #!/bin/bash
 
-LETS_ENCRYPT_ETC="/etc/letsencrypt"
 LETS_ENCRYPT_ROOT_DOMAIN=$(hostname -f)
+SLEEP_INTERVAL_IN_SECONDS=60
 
 service cron start
 service rsyslog start
 
-certificate_exists_for() {
-	test -e "$LETS_ENCRYPT_ETC/live/$1/privkey.pem"
+check_apache_status_loop() {
+	echo "Monitoring apache2 status..."
+	while service apache2 status >/dev/null; do
+		sleep $SLEEP_INTERVAL_IN_SECONDS
+	done
+
+	echo "Service apache2 is no longer running... Exiting"
 }
 
-echo "Checking certificates..."
-if ! certificate_exists_for $LETS_ENCRYPT_ROOT_DOMAIN; then
-	echo "No certificate found for $LETS_ENCRYPT_ROOT_DOMAIN"
+# Enable our sites configuration (see /etc/apache2/sites-available)
+a2ensite "*.conf"
 
-	[ -z "$LETS_ENCRYPT_DOMAINS" ] || LETS_ENCRYPT_ADDITIONAL_DOMAINS="--domains $LETS_ENCRYPT_DOMAINS"
+echo
+echo "Checking certificates for $LETS_ENCRYPT_ROOT_DOMAIN"
+echo
 
-	certbot run \
+if [ -n "$LETS_ENCRYPT_DOMAINS" ]; then 
+	LETS_ENCRYPT_ADDITIONAL_DOMAINS="--domains $LETS_ENCRYPT_DOMAINS"
+fi
+
+certbot run \
 		--apache  \
 		--non-interactive \
 		--no-self-upgrade \
@@ -25,13 +35,4 @@ if ! certificate_exists_for $LETS_ENCRYPT_ROOT_DOMAIN; then
 		--domain $LETS_ENCRYPT_ROOT_DOMAIN \
 		$LETS_ENCRYPT_ADDITIONAL_DOMAINS
 
-	# see conf/extra/httpd-vhosts.conf
-	ln -s $LETS_ENCRYPT_ETC/live/$LETS_ENCRYPT_ROOT_DOMAIN $LETS_ENCRYPT_ETC/certs
-else
-	echo "Certificate found for $LETS_ENCRYPT_ROOT_DOMAIN"
-	certbot certificates --cert-name $LETS_ENCRYPT_ROOT_DOMAIN
-	certbot renew --no-self-upgrade
-
-	echo "Launching apache2."
-	httpd-foreground
-fi
+check_apache_status_loop

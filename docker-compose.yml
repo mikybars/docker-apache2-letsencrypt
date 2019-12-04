@@ -4,6 +4,7 @@ services:
   web:
     build: .
     image: mperezi/apache2-letsencrypt
+    restart: always
     hostname: mperezi.com
     ports:
       - '80:80'
@@ -11,8 +12,8 @@ services:
     environment:
       LETS_ENCRYPT_EMAIL: "mperezibars@gmail.com"
     volumes:
-      - '$PWD/html:/usr/local/apache2/htdocs'
-      - '$PWD/conf/extra:/usr/local/apache2/conf/extra'
+      - '$PWD/html:/var/www/html'
+      - '$PWD/conf/sites-available:/etc/apache2/sites-available'
       - 'certs:/etc/letsencrypt'
 
 volumes:
